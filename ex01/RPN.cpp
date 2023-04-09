@@ -3,8 +3,45 @@
 
 #include "RPN.hpp"
 
+#include <cctype>
+#include <cstring>
 #include <stack>
 #include <string>
+
+static bool _do_operation(std::string::value_type operator_char, std::stack<double>& operands)
+{
+    if (operands.size() < 2)
+    {
+        return false;
+    }
+
+    double rhs = operands.top();
+    operands.pop();
+    double lhs = operands.top();
+    operands.pop();
+
+    switch (operator_char)
+    {
+    case '+':
+        operands.push(lhs + rhs);
+        break;
+    case '-':
+        operands.push(lhs - rhs);
+        break;
+    case '*':
+        operands.push(lhs * rhs);
+        break;
+    case '/':
+        if (rhs == 0)
+        {
+            // !!
+            return false;
+        }
+        operands.push(lhs / rhs);
+        break;
+    }
+    return true;
+}
 
 bool RPN::calculate(const std::string& str, double& value)
 {
@@ -16,48 +53,17 @@ bool RPN::calculate(const std::string& str, double& value)
         end = str.find_first_of(delim, beg);
         if (beg != end)
         {
-            std::string s = str.substr(beg, end - beg);
-            if (s.empty())
-            {
-                continue;
-            }
-
-            if (s.length() != 1)
+            if (end - beg != sizeof(std::string::value_type))
             {
                 return false;
             }
 
-            std::string::value_type c = s[0];
+            const std::string::value_type c = str[beg];
             if (std::strchr("+-*/", c))
             {
-                if (operands.size() < 2)
+                if (!_do_operation(c, operands))
                 {
                     return false;
-                }
-                double rhs = operands.top();
-                operands.pop();
-                double lhs = operands.top();
-                operands.pop();
-
-                switch (c)
-                {
-                case '+':
-                    operands.push(lhs + rhs);
-                    break;
-                case '-':
-                    operands.push(lhs - rhs);
-                    break;
-                case '*':
-                    operands.push(lhs * rhs);
-                    break;
-                case '/':
-                    if (rhs == 0)
-                    {
-                        // !!
-                        return false;
-                    }
-                    operands.push(lhs / rhs);
-                    break;
                 }
             }
             else if (std::isdigit(c))

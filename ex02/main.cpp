@@ -11,6 +11,8 @@
 
 #include <sys/time.h>
 
+#include "timsort.hpp"
+
 struct Stopwatch
 {
 public:
@@ -130,13 +132,21 @@ int main(int argc, char* argv[])
 
     Stopwatch sw;
     // TODO: PmergeMe first
+    ft::timsort(first.begin(), first.end());
     ::time_t lap = sw.splitLap();
-    std::cout << "Time to process a range of " << first.size() << " elements with std::vector : " << lap << "ns" << std::endl;
+    if (std::equal(first.begin(), first.end(), iv.begin()))
+    {
+        std::cout << "Time to process a range of " << first.size() << " elements with std::vector : " << lap << "ns" << std::endl;
+    }
 
     sw.reset();
     // TODO: PmergeMe second
+    ft::timsort(second.begin(), second.end());
     lap = sw.splitLap();
-    std::cout << "Time to process a range of " << second.size() << " elements with std::list : " << lap << "ns" << std::endl;
+    if (std::equal(second.begin(), second.end(), iv.begin()))
+    {
+        std::cout << "Time to process a range of " << second.size() << " elements with std::list :   " << lap << "ns" << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }
