@@ -69,7 +69,7 @@ namespace ft
         typedef T type;
     };
 
-    template <typename T>
+    template <typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void>
     struct make_void
     {
         typedef void type;
@@ -101,10 +101,10 @@ namespace ft
 }
 
 template <typename T>
-typename ft::enable_if<ft::has_const_iterator<T>::value && !ft::has_traits_type<T>::value, std::ostream>::type& operator<<(std::ostream& os, const T& vec)
+typename ft::enable_if<ft::has_const_iterator<T>::value && !ft::has_traits_type<T>::value, std::ostream>::type& operator<<(std::ostream& os, const T& coll)
 {
     std::ostringstream oss;
-    for (typename T::const_iterator it = vec.begin(); it != vec.end(); ++it)
+    for (typename T::const_iterator it = coll.begin(); it != coll.end(); ++it)
     {
         oss << ' ' << *it;
     }
