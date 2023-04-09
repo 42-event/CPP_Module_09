@@ -167,10 +167,7 @@ struct InsertToDatabase
     }
 
 private:
-    InsertToDatabase& operator=(const InsertToDatabase&)
-    {
-        return *this;
-    }
+    InsertToDatabase& operator=(const InsertToDatabase&);
 };
 
 bool BitcoinExchange::loadDatabase(const char* filename)
@@ -226,10 +223,7 @@ struct ValuePrinter
     }
 
 private:
-    ValuePrinter& operator=(const ValuePrinter&)
-    {
-        return *this;
-    }
+    ValuePrinter& operator=(const ValuePrinter&);
 };
 
 void BitcoinExchange::printValue(const char* filename)
