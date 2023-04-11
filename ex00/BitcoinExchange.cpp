@@ -151,9 +151,9 @@ BitcoinExchange::~BitcoinExchange()
 
 struct InsertToDatabase
 {
-    std::map<int, double, std::greater<int>>& database;
+    std::map<int, double, std::greater<int> >& database;
 
-    InsertToDatabase(std::map<int, double, std::greater<int>>& database)
+    InsertToDatabase(std::map<int, double, std::greater<int> >& database)
         : database(database) {}
 
     InsertToDatabase(const InsertToDatabase& that)
@@ -168,6 +168,7 @@ struct InsertToDatabase
     }
 
 private:
+    InsertToDatabase();
     InsertToDatabase& operator=(const InsertToDatabase&);
 };
 
@@ -178,9 +179,9 @@ bool BitcoinExchange::loadDatabase(const char* filename)
 
 struct ValuePrinter
 {
-    const std::map<int, double, std::greater<int>>& database;
+    const std::map<int, double, std::greater<int> >& database;
 
-    ValuePrinter(const std::map<int, double, std::greater<int>>& database)
+    ValuePrinter(const std::map<int, double, std::greater<int> >& database)
         : database(database) {}
 
     ValuePrinter(const ValuePrinter& that)
@@ -208,7 +209,7 @@ struct ValuePrinter
         }
         else
         {
-            std::map<int, double, std::greater<int>>::const_iterator it = database.lower_bound(date);
+            std::map<int, double, std::greater<int> >::const_iterator it = database.lower_bound(date);
             std::string dateStr = _toDateString(date);
             if (it != database.end())
             {
@@ -224,6 +225,7 @@ struct ValuePrinter
     }
 
 private:
+    ValuePrinter();
     ValuePrinter& operator=(const ValuePrinter&);
 };
 

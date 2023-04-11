@@ -1,17 +1,16 @@
 /* Any copyright is dedicated to the Public Domain.
  * https://creativecommons.org/publicdomain/zero/1.0/ */
 
+#include "PmergeMe.hpp"
+
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include <list>
-#include <sstream>
 #include <vector>
 
 #include <sys/time.h>
-
-#include "timsort.hpp"
 
 struct Stopwatch
 {
@@ -58,61 +57,6 @@ private:
     Stopwatch& operator=(const Stopwatch&);
 };
 
-namespace ft
-{
-    template <bool B, typename T>
-    struct enable_if
-    {
-    };
-
-    template <typename T>
-    struct enable_if<true, T>
-    {
-        typedef T type;
-    };
-
-    template <typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void>
-    struct make_void
-    {
-        typedef void type;
-    };
-
-    template <typename T, typename = void>
-    struct has_const_iterator
-    {
-        static const bool value = false;
-    };
-
-    template <typename T>
-    struct has_const_iterator<T, typename make_void<typename T::const_iterator>::type>
-    {
-        static const bool value = true;
-    };
-
-    template <typename T, typename = void>
-    struct has_traits_type
-    {
-        static const bool value = false;
-    };
-
-    template <typename T>
-    struct has_traits_type<T, typename make_void<typename T::traits_type>::type>
-    {
-        static const bool value = true;
-    };
-}
-
-template <typename T>
-typename ft::enable_if<ft::has_const_iterator<T>::value && !ft::has_traits_type<T>::value, std::ostream>::type& operator<<(std::ostream& os, const T& coll)
-{
-    std::ostringstream oss;
-    for (typename T::const_iterator it = coll.begin(); it != coll.end(); ++it)
-    {
-        oss << ' ' << *it;
-    }
-    return os << oss.str();
-}
-
 int main(int argc, char* argv[])
 {
     std::vector<int> iv;
@@ -123,6 +67,7 @@ int main(int argc, char* argv[])
         iv.push_back(n);
     }
 
+    PmergeMe sort(16);
     std::vector<int> first(iv.begin(), iv.end());
     std::list<int> second(iv.begin(), iv.end());
 
@@ -132,20 +77,28 @@ int main(int argc, char* argv[])
 
     Stopwatch sw;
     // TODO: PmergeMe first
-    ft::timsort(first.begin(), first.end());
+    sort.insertionSort(first, first.begin(), first.end());
     ::time_t lap = sw.splitLap();
     if (std::equal(first.begin(), first.end(), iv.begin()))
     {
         std::cout << "Time to process a range of " << first.size() << " elements with std::vector : " << lap << "ns" << std::endl;
     }
+    else
+    {
+        std::cout << "WhatTheHell: " << first << std::endl;
+    }
 
     sw.reset();
     // TODO: PmergeMe second
-    ft::timsort(second.begin(), second.end());
+    sort.insertionSort(second, second.begin(), second.end());
     lap = sw.splitLap();
     if (std::equal(second.begin(), second.end(), iv.begin()))
     {
         std::cout << "Time to process a range of " << second.size() << " elements with std::list :   " << lap << "ns" << std::endl;
+    }
+    else
+    {
+        std::cout << "WhatTheFuck: " << second << std::endl;
     }
 
     return EXIT_SUCCESS;
